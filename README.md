@@ -2,6 +2,8 @@
 
 Tech Demo, Ignore...open github pages.
 
+https://noneeeeeeeeeee.github.io/StoreFrontPageProtype/
+
 ## Setup Instructions
 
 ### 1. Database Setup (Supabase)

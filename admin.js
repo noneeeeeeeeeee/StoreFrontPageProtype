@@ -2,7 +2,13 @@
 const { supabaseClient } = window;
 
 // DOM Elements
-const transactionsTbody = document.getElementById("transactions-tbody");
+const transactionsTbody = document.getElementById("transactions-table-body");
+const transactionGrid = document.getElementById("transaction-grid");
+const tableWrapper = document.getElementById("table-wrapper");
+const gridViewBtn = document.getElementById("grid-view");
+const tableViewBtn = document.getElementById("table-view");
+const transactionSearch = document.getElementById("transaction-search");
+const refreshBtn = document.getElementById("refresh-transactions");
 const totalSales = document.getElementById("total-sales");
 const totalTransactions = document.getElementById("total-transactions");
 const transactionModal = document.getElementById("transaction-modal");
@@ -22,13 +28,87 @@ const loading = document.getElementById("loading");
 // State
 let currentTransactionId = null;
 let transactions = [];
+let filteredTransactions = [];
+let currentView = "grid"; // 'grid' or 'table'
 
 // Initialize app
 document.addEventListener("DOMContentLoaded", () => {
   console.log("Admin panel loaded");
   setupEventListeners();
   loadTransactions();
+
+  // Setup search functionality
+  if (transactionSearch) {
+    transactionSearch.addEventListener("input", handleSearch);
+  }
+
+  // Setup refresh button
+  if (refreshBtn) {
+    refreshBtn.addEventListener("click", loadTransactions);
+  }
+
+  // Setup view toggle buttons
+  if (gridViewBtn) {
+    gridViewBtn.addEventListener("click", () => switchView("grid"));
+  }
+  if (tableViewBtn) {
+    tableViewBtn.addEventListener("click", () => switchView("table"));
+  }
+
+  // Setup click handlers for grid and table
+  setupClickHandlers();
 });
+
+// Switch between grid and table view
+function switchView(view) {
+  currentView = view;
+
+  // Show loading state briefly for smooth transition
+  showLoading();
+
+  setTimeout(() => {
+    // Update button states
+    if (gridViewBtn && tableViewBtn) {
+      gridViewBtn.classList.toggle("active", view === "grid");
+      tableViewBtn.classList.toggle("active", view === "table");
+    }
+
+    // Show/hide appropriate view
+    if (transactionGrid && tableWrapper) {
+      transactionGrid.style.display = view === "grid" ? "grid" : "none";
+      tableWrapper.style.display = view === "table" ? "block" : "none";
+    }
+
+    // Re-render transactions in the new view
+    renderTransactions();
+    hideLoading();
+  }, 200);
+}
+
+// Setup click handlers for both views
+function setupClickHandlers() {
+  // Grid view click handler
+  if (transactionGrid) {
+    transactionGrid.addEventListener("click", (e) => {
+      const card = e.target.closest(".transaction-card[data-id]");
+      if (!card) return;
+      if (e.target.closest("button")) return;
+      const id = card.getAttribute("data-id");
+      viewTransaction(id);
+    });
+  }
+
+  // Table view click handler
+  if (transactionsTbody) {
+    transactionsTbody.addEventListener("click", (e) => {
+      const row = e.target.closest("tr[data-id]");
+      if (!row) return;
+      if (e.target.closest("button")) return;
+      const id = row.getAttribute("data-id");
+      viewTransaction(id);
+    });
+  }
+}
 
 function setupEventListeners() {
   // Modal controls
@@ -76,6 +156,7 @@ async function loadTransactions() {
     }
 
     transactions = data || [];
+    filteredTransactions = transactions;
     displayTransactions();
     updateStats();
   } catch (error) {
@@ -86,25 +167,33 @@ async function loadTransactions() {
   }
 }
 
-function displayTransactions() {
-  if (!transactionsTbody) return;
+function renderTransactions() {
+  const list = filteredTransactions || [];
 
-  if (transactions.length === 0) {
-    transactionsTbody.innerHTML = `
-      <tr>
-        <td colspan="7" class="empty-state">
-          <div class="empty-transactions">
-            <i class="fas fa-receipt"></i>
-            <p>No transactions found</p>
-            <small>Transactions will appear here once customers make purchases</small>
-          </div>
-        </td>
-      </tr>
+  if (currentView === "grid") {
+    renderGridView(list);
+  } else {
+    renderTableView(list);
+  }
+}
+
+function renderGridView(list) {
+  if (!transactionGrid) return;
+
+  if (list.length === 0) {
+    transactionGrid.innerHTML = `
+      <div class="empty-state-grid">
+        <div class="empty-transactions glass">
+          <i class="fas fa-receipt"></i>
+          <h3>No transactions found</h3>
+          <p>Transactions will appear here once customers make purchases</p>
+        </div>
+      </div>
     `;
     return;
   }
 
-  transactionsTbody.innerHTML = transactions
+  transactionGrid.innerHTML = list
     .map((transaction) => {
       const when =
         transaction.created_at ||
@@ -117,60 +206,124 @@ function displayTransactions() {
         hour: "2-digit",
         minute: "2-digit",
       });
+
       let items = [];
       try {
         items = Array.isArray(transaction.items)
           ? transaction.items
           : JSON.parse(transaction.items || "[]");
-      } catch (_) {
+      } catch (e) {
         items = [];
       }
-      const itemsText =
-        items.length > 0
-          ? items
-              .map(
-                (item) => `${item.name || item.product_name} (${item.quantity})`
-              )
-              .join(", ")
-          : "No items";
+
+      const itemCount = items.reduce(
+        (sum, item) => sum + (item.quantity || 0),
+        0
+      );
+      const customerName =
+        transaction.customer_name || transaction.customer || "Unknown Customer";
 
       return `
-        <tr>
-          <td class="transaction-id">#${transaction.id
-            .toString()
-            .slice(-8)}</td>
+        <div class="transaction-card glass" data-id="${transaction.id}">
+          <div class="card-header">
+            <span class="transaction-id">#${transaction.id}</span>
+            <span class="transaction-date">${date}</span>
+          </div>
+          <div class="card-body">
+            <div class="transaction-info">
+              <span class="info-label"><i class="fas fa-user"></i> Customer</span>
+              <span class="info-value">${customerName}</span>
+            </div>
+            <div class="transaction-info">
+              <span class="info-label"><i class="fas fa-shopping-bag"></i> Items</span>
+              <span class="info-value">${itemCount} item${
+        itemCount !== 1 ? "s" : ""
+      }</span>
+            </div>
+            <div class="transaction-info">
+              <span class="info-label"><i class="fas fa-money-bill-wave"></i> Total</span>
+              <span class="transaction-total">Rp ${formatPrice(
+                transaction.total
+              )}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    })
+    .join("");
+}
+
+function renderTableView(list) {
+  if (!transactionsTbody) return;
+
+  if (list.length === 0) {
+    transactionsTbody.innerHTML = `
+      <tr>
+        <td colspan="6" class="empty-state">
+          <div class="empty-transactions">
+            <i class="fas fa-receipt"></i>
+            <p>No transactions found</p>
+            <small>Transactions will appear here once customers make purchases</small>
+          </div>
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  transactionsTbody.innerHTML = list
+    .map((transaction) => {
+      const when =
+        transaction.created_at ||
+        transaction.transaction_date ||
+        transaction.date;
+      const date = new Date(when).toLocaleDateString("id-ID", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
+      let items = [];
+      try {
+        items = Array.isArray(transaction.items)
+          ? transaction.items
+          : JSON.parse(transaction.items || "[]");
+      } catch (e) {
+        items = [];
+      }
+
+      const itemCount = items.reduce(
+        (sum, item) => sum + (item.quantity || 0),
+        0
+      );
+      const customerName =
+        transaction.customer_name || transaction.customer || "Unknown Customer";
+
+      return `
+        <tr data-id="${transaction.id}" class="transaction-row">
+          <td>#${transaction.id}</td>
+          <td>${customerName}</td>
+          <td>${itemCount} item${itemCount !== 1 ? "s" : ""}</td>
+          <td>Rp ${formatPrice(transaction.total)}</td>
           <td>${date}</td>
-          <td class="customer-name">${
-            transaction.customer_name || "Anonymous"
-          }</td>
-          <td class="transaction-items">${itemsText}</td>
-          <td class="transaction-total">Rp ${Number(
-            transaction.total_amount ?? transaction.total ?? 0
-          ).toLocaleString("id-ID")}</td>
           <td>
-            <span class="status-badge status-completed">
-              <i class="fas fa-check-circle"></i>
-              Completed
-            </span>
-          </td>
-          <td class="action-buttons">
-            <button class="btn btn-sm btn-primary view-btn" onclick="viewTransaction('${
+            <button class="btn btn-sm btn-primary" onclick="viewTransaction('${
               transaction.id
             }')">
               <i class="fas fa-eye"></i>
-              View
-            </button>
-            <button class="btn btn-sm btn-danger delete-btn" onclick="confirmDelete('${
-              transaction.id
-            }')">
-              <i class="fas fa-trash"></i>
-              Delete
             </button>
           </td>
         </tr>
       `;
     })
     .join("");
+}
+
+// Legacy function for compatibility
+function displayTransactions() {
+  renderTransactions();
 }
 
 function updateStats() {
@@ -186,7 +339,9 @@ function updateStats() {
 }
 
 function viewTransaction(transactionId) {
-  const transaction = transactions.find((t) => t.id === transactionId);
+  const transaction = transactions.find(
+    (t) => String(t.id) === String(transactionId)
+  );
   if (!transaction) {
     showError("Transaction not found");
     return;
@@ -269,7 +424,9 @@ function viewTransaction(transactionId) {
 
 function confirmDelete(transactionId) {
   currentTransactionId = transactionId;
-  const transaction = transactions.find((t) => t.id === transactionId);
+  const transaction = transactions.find(
+    (t) => String(t.id) === String(transactionId)
+  );
 
   if (!transaction) {
     showError("Transaction not found");
@@ -313,6 +470,20 @@ async function deleteTransaction() {
   } finally {
     hideLoading();
   }
+}
+
+function handleSearch(e) {
+  const q = (e.target.value || "").trim().toLowerCase();
+  if (!q) {
+    filteredTransactions = transactions;
+    return displayTransactions();
+  }
+  filteredTransactions = transactions.filter((t) => {
+    const idStr = String(t.id).toLowerCase();
+    const name = (t.customer_name || "Anonymous").toLowerCase();
+    return idStr.includes(q) || name.includes(q);
+  });
+  displayTransactions();
 }
 
 // Modal Controls
@@ -366,6 +537,11 @@ function showLoading() {
   if (loading) {
     loading.classList.remove("hidden");
   }
+}
+
+// Format price with thousands separator
+function formatPrice(price) {
+  return new Intl.NumberFormat("id-ID").format(price);
 }
 
 function hideLoading() {

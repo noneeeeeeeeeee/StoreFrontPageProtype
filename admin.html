@@ -4,6 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BookStore Admin - Management Panel</title>
+
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>" />
+
     <link rel="stylesheet" href="styles.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -76,24 +82,68 @@
             </div>
           </div>
 
-          <div class="transactions-table">
+          <!-- Admin Tools -->
+          <div class="admin-toolbar">
+            <div class="search-group">
+              <i class="fas fa-search"></i>
+              <input
+                type="text"
+                id="transaction-search"
+                placeholder="Search by ID or customer name..." />
+            </div>
+            <div class="toolbar-actions">
+              <button class="btn btn-secondary" id="refresh-transactions">
+                <i class="fas fa-rotate"></i>
+                Refresh
+              </button>
+            </div>
+          </div>
+
+          <div class="admin-dashboard glass">
             <div class="table-container">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Date</th>
-                    <th>Customer</th>
-                    <th>Items</th>
-                    <th>Total</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="transactions-tbody">
-                  <!-- Transactions will be loaded here -->
-                </tbody>
-              </table>
+              <div class="table-header">
+                <h3><i class="fas fa-list"></i> Transaction History</h3>
+                <div class="table-actions">
+                  <div class="view-toggle">
+                    <button
+                      class="btn-icon active"
+                      id="grid-view"
+                      title="Grid View">
+                      <i class="fas fa-th-large"></i>
+                    </button>
+                    <button class="btn-icon" id="table-view" title="Table View">
+                      <i class="fas fa-table"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Enhanced Transaction Grid -->
+              <div class="transaction-grid" id="transaction-grid">
+                <!-- Transactions will be rendered here dynamically -->
+              </div>
+
+              <!-- Traditional Table View (Hidden by default) -->
+              <div
+                class="table-wrapper"
+                id="table-wrapper"
+                style="display: none">
+                <table class="enhanced-table">
+                  <thead>
+                    <tr>
+                      <th><i class="fas fa-hashtag"></i> ID</th>
+                      <th><i class="fas fa-user"></i> Customer</th>
+                      <th><i class="fas fa-shopping-bag"></i> Items</th>
+                      <th><i class="fas fa-money-bill-wave"></i> Total</th>
+                      <th><i class="fas fa-clock"></i> Date</th>
+                      <th><i class="fas fa-cog"></i> Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="transactions-table-body">
+                    <!-- Table data will be populated here -->
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </section>

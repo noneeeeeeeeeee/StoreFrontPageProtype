@@ -1,6 +1,9 @@
 // Get Supabase client from config
 const { supabaseClient } = window;
 
+// Demo mode state
+let isDemoMode = false;
+
 // Store for cart items
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 let products = [];
@@ -26,6 +29,11 @@ const closeError = document.getElementById("close-error");
 const successNotification = document.getElementById("success-notification");
 const successMessage = document.getElementById("success-message");
 const cartAnimation = document.getElementById("cart-animation");
+const demoBanner = document.getElementById("demo-banner");
+const demoIndicator = document.getElementById("demo-indicator");
+const closeDemoBanner = document.getElementById("close-demo-banner");
+const clearCartModal = document.getElementById("clear-cart-modal");
+const confirmClearCartBtn = document.getElementById("confirm-clear-cart");
 
 // Placeholder products data for BookStore
 const placeholderProducts = [
@@ -98,26 +106,23 @@ const placeholderProducts = [
 
 // Initialize the application
 document.addEventListener("DOMContentLoaded", async () => {
-  try {
-    await initializeDatabase();
-    await loadProducts();
-    updateCartCount();
-    setupEventListeners();
-    updateCartDisplay();
-  } catch (error) {
-    console.error("Error initializing app:", error);
-    showError("Failed to initialize application. Using offline mode.");
-    // Load placeholder products as fallback
-    products = placeholderProducts;
-    renderProducts();
-    updateCartCount();
-    setupEventListeners();
-    updateCartDisplay();
-  }
+  console.log("DOM Content Loaded");
+  console.log("Product grid element:", document.getElementById("product-grid"));
+
+  await initializeApp();
 });
 
 // Initialize database tables
 async function initializeDatabase() {
+  // Check if we have Supabase configuration
+  if (
+    !supabaseClient ||
+    !window.isSupabaseAvailable ||
+    !window.isSupabaseAvailable()
+  ) {
+    throw new Error("Supabase not configured");
+  }
+
   try {
     // Check if products table exists and has data
     const { data: existingProducts, error: checkError } = await supabaseClient
@@ -127,10 +132,9 @@ async function initializeDatabase() {
 
     if (checkError && checkError.code === "42P01") {
       // Table doesn't exist, we'll assume it needs to be created
-      showError(
+      throw new Error(
         "Database tables not found. Please ensure your Supabase database is properly configured."
       );
-      return;
     }
 
     // If table exists but is empty, populate with placeholder data
@@ -139,9 +143,7 @@ async function initializeDatabase() {
     }
   } catch (error) {
     console.error("Database initialization error:", error);
-    showError("Database connection failed. Using offline mode.");
-    // Use placeholder data in offline mode
-    products = placeholderProducts;
+    throw error;
   }
 }
 
@@ -175,23 +177,40 @@ async function loadProducts() {
     }
 
     products = data || placeholderProducts;
-    displayProducts();
+    renderProducts();
   } catch (error) {
     console.error("Error loading products:", error);
     showError("Failed to load products from database. Using offline data.");
     products = placeholderProducts;
-    displayProducts();
+    renderProducts();
   }
 }
 
 // Display products in the grid
-function displayProducts() {
+function renderProducts() {
+  const productGrid = document.getElementById("product-grid");
+  if (!productGrid) return;
+
   productGrid.innerHTML = "";
+
+  if (!products || products.length === 0) {
+    productGrid.innerHTML = `
+      <div class="no-products glass">
+        <i class="fas fa-box-open"></i>
+        <h3>No Products Available</h3>
+        <p>Products will appear here once loaded.</p>
+      </div>
+    `;
+    return;
+  }
 
   products.forEach((product) => {
     const productCard = createProductCard(product);
     productGrid.appendChild(productCard);
   });
+
+  // Also bind direct click handlers post-render to ensure reliability
+  bindProductCardEvents();
 }
 
 // Create product card element
@@ -223,50 +242,93 @@ function createProductCard(product) {
 
 // Setup event listeners
 function setupEventListeners() {
-  // Add to cart buttons
-  productGrid.addEventListener("click", handleAddToCart);
+  console.log("Setting up event listeners...");
+
+  // Re-query dynamic elements after render
+  const productGridEl = document.getElementById("product-grid");
+  const cartItemsEl = document.getElementById("cart-items");
+  const closeErrorEl = document.getElementById("close-error");
+  const saveTransactionEl = document.getElementById("save-transaction");
+  const clearCartEl = document.getElementById("clear-cart");
+  const successModalEl = document.getElementById("success-modal");
+  const closeSuccessModalEl = document.getElementById("close-modal");
+  const closeDemoBannerEl = document.getElementById("close-demo-banner");
+  const demoBannerEl = document.getElementById("demo-banner");
+
+  // Add to cart buttons - event delegation on grid
+  if (productGridEl) {
+    console.log("Product grid found, adding event listener");
+    productGridEl.addEventListener("click", handleAddToCart);
+  } else {
+    console.log("Product grid not found!");
+  }
 
   // Error notification
-  if (closeError) {
-    closeError.addEventListener("click", hideError);
+  if (closeErrorEl) {
+    closeErrorEl.addEventListener("click", hideError);
   }
 
   // Cart actions
-  if (saveTransactionBtn) {
-    saveTransactionBtn.addEventListener("click", saveTransaction);
+  if (saveTransactionEl) {
+    saveTransactionEl.addEventListener("click", saveTransaction);
   }
-  if (clearCartBtn) {
-    clearCartBtn.addEventListener("click", clearCart);
+  if (clearCartEl) {
+    clearCartEl.addEventListener("click", clearCart);
   }
 
   // Close success modal
-  if (closeSuccessModalBtn) {
-    closeSuccessModalBtn.addEventListener("click", closeSuccessModal);
+  if (closeSuccessModalEl) {
+    closeSuccessModalEl.addEventListener("click", closeSuccessModal);
   }
-  if (successModal) {
-    successModal.addEventListener("click", (e) => {
-      if (e.target === successModal) closeSuccessModal();
+  if (successModalEl) {
+    successModalEl.addEventListener("click", (e) => {
+      if (e.target === successModalEl) closeSuccessModal();
     });
   }
 
   // Delegate cart item events
-  if (cartItems) {
-    cartItems.addEventListener("click", handleRemoveItem);
-    cartItems.addEventListener("input", handleQuantityChange);
+  if (cartItemsEl) {
+    cartItemsEl.addEventListener("click", handleRemoveItem);
+    cartItemsEl.addEventListener("input", handleQuantityChange);
+  }
+
+  // Demo banner close button
+  if (closeDemoBannerEl) {
+    closeDemoBannerEl.addEventListener("click", () => {
+      if (demoBannerEl) {
+        demoBannerEl.style.display = "none";
+      }
+    });
   }
 }
 
 // Handle add to cart
 function handleAddToCart(event) {
-  if (!event.target.classList.contains("add-to-cart")) return;
+  // Support clicks on nested elements inside the button (e.g., icon)
+  const button = event.target.closest(".add-to-cart");
+  if (!button) return;
 
-  const productId = parseInt(event.target.getAttribute("data-product-id"));
-  const quantity = parseInt(document.getElementById(`qty-${productId}`).value);
+  const productId = parseInt(button.getAttribute("data-product-id"));
+  const qtyInput = document.getElementById(`qty-${productId}`);
+  const quantity = qtyInput ? Math.max(1, parseInt(qtyInput.value) || 1) : 1;
 
   const product = products.find((p) => p.id === productId);
   if (!product) return;
 
   addToCart(product, quantity);
+}
+
+// Bind direct listeners to newly rendered product cards
+function bindProductCardEvents() {
+  const buttons = document.querySelectorAll(".add-to-cart");
+  buttons.forEach((btn) => {
+    if (btn.dataset.bound === "1") return;
+    btn.addEventListener("click", (e) => {
+      // Delegate to shared handler
+      handleAddToCart(e);
+    });
+    btn.dataset.bound = "1";
+  });
 }
 
 // Add item to cart with animation
@@ -285,6 +347,10 @@ function addToCart(product, quantity) {
   // Save cart to localStorage
   localStorage.setItem("cart", JSON.stringify(cart));
 
+  // Live update cart display without page refresh
+  updateCartDisplay();
+  updateCartSummary();
+
   // Show cart animation
   showCartAnimation();
 
@@ -294,16 +360,12 @@ function addToCart(product, quantity) {
   // Update cart count
   updateCartCount();
 
-  // Show success feedback
-  const button = document.querySelector(`[data-product-id="${product.id}"]`);
-  const originalText = button.innerHTML;
-  button.innerHTML = '<i class="fas fa-check"></i> Added!';
-  button.style.background = "linear-gradient(135deg, #10b981, #059669)";
-
-  setTimeout(() => {
-    button.innerHTML = originalText;
-    button.style.background = "";
-  }, 1500);
+  // Animate the cart button to show item was added
+  const cartBtn = document.querySelector(".cart-btn");
+  if (cartBtn) {
+    cartBtn.classList.add("cart-updated");
+    setTimeout(() => cartBtn.classList.remove("cart-updated"), 600);
+  }
 }
 
 // Show cart animation
@@ -598,3 +660,82 @@ document.addEventListener("keydown", (event) => {
     closeSuccessModal();
   }
 });
+
+// Global click delegation (capture phase) as a safety net for nested elements
+document.addEventListener(
+  "click",
+  (e) => {
+    const btn = e.target.closest && e.target.closest(".add-to-cart");
+    if (!btn) return;
+
+    // Prevent duplicate handling if grid listener already caught it
+    if (btn.__handledOnce) return;
+    btn.__handledOnce = true;
+    setTimeout(() => (btn.__handledOnce = false), 0);
+
+    const productId = parseInt(btn.getAttribute("data-product-id"));
+    const qtyInput = document.getElementById(`qty-${productId}`);
+    const quantity = qtyInput ? parseInt(qtyInput.value) || 1 : 1;
+    const product = products.find((p) => p.id === productId);
+    if (!product) return;
+    addToCart(product, quantity);
+  },
+  true
+);
+
+// Initialize demo mode
+function initializeDemoMode() {
+  const demoBanner = document.getElementById("demo-banner");
+  const demoIndicator = document.getElementById("demo-indicator");
+  const closeButton = demoBanner?.querySelector(".demo-close");
+
+  // Show demo banner and indicator
+  if (isDemoMode) {
+    if (demoBanner) demoBanner.style.display = "block";
+    if (demoIndicator) demoIndicator.style.display = "inline";
+  } else {
+    if (demoBanner) demoBanner.style.display = "none";
+    if (demoIndicator) demoIndicator.style.display = "none";
+  }
+
+  // Handle demo banner close
+  if (closeButton) {
+    closeButton.addEventListener("click", () => {
+      demoBanner.style.display = "none";
+    });
+  }
+}
+
+// Enable demo mode with placeholder data
+function enableDemoMode() {
+  isDemoMode = true;
+  products = placeholderProducts;
+  console.log("Demo mode enabled - using placeholder data");
+  initializeDemoMode();
+}
+
+// Initialize the app
+async function initializeApp() {
+  console.log("Initializing app...");
+  initializeDemoMode();
+
+  try {
+    await initializeDatabase();
+    await loadProducts();
+    renderProducts();
+    updateCartDisplay();
+    updateCartCount();
+  } catch (error) {
+    console.error("Failed to initialize app:", error);
+    enableDemoMode();
+    renderProducts();
+    updateCartDisplay();
+    updateCartCount();
+  }
+
+  // Setup event listeners after DOM is ready and products are rendered
+  setTimeout(() => {
+    console.log("Setting up event listeners after render...");
+    setupEventListeners();
+  }, 100);
+}

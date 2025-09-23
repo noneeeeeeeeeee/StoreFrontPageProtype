@@ -3,7 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BookStore - Modern Store Front</title>
+    <title>BookStore - Modern Shopping Experience</title>
+
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>" />
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -23,6 +33,19 @@
       <div class="floating-circle circle-4"></div>
     </div>
 
+    <!-- Demo Mode Banner -->
+    <div id="demo-banner" class="demo-banner hidden">
+      <div class="container">
+        <div class="demo-content">
+          <i class="fas fa-info-circle"></i>
+          <span>Demo Mode: Database not configured. Data won't be saved.</span>
+          <button id="close-demo-banner" class="close-demo-banner">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Header -->
     <header class="header">
       <div class="container">
@@ -34,6 +57,7 @@
           <nav class="nav">
             <a href="index.html" class="nav-link active">Shop</a>
             <a href="admin.html" class="nav-link">Admin</a>
+            <span id="demo-indicator" class="demo-indicator hidden">DEMO</span>
           </nav>
         </div>
       </div>
@@ -51,29 +75,29 @@
     </div>
 
     <!-- Main Content -->
-    <main class="main">
+    <main class="main section-spacing">
       <div class="container">
-        <div class="main-layout">
+        <div class="main-layout grid-gap">
           <!-- Shop Section -->
-          <section class="shop-section">
+          <section class="shop-section content-spacing">
             <h1 class="section-title">
               <i class="fas fa-store"></i>
               Our Products
             </h1>
 
             <!-- Product Grid -->
-            <div class="product-grid" id="product-grid">
+            <div class="product-grid grid-gap" id="product-grid">
               <!-- Products will be loaded dynamically -->
             </div>
           </section>
 
           <!-- Cart Section (Sidebar on desktop, bottom on mobile) -->
-          <section class="cart-section">
+          <section class="cart-section content-spacing card-spacing">
             <div class="cart-container">
               <div class="cart-header">
                 <h2 class="cart-title">
                   <i class="fas fa-shopping-cart"></i>
-                  Shopping Cart (<span id="cart-count">0</span>)
+                  Shopping Cart
                 </h2>
               </div>
 
@@ -120,21 +144,88 @@
       </div>
     </main>
 
-    <!-- Transaction Success Modal -->
-    <div id="success-modal" class="modal hidden">
-      <div class="modal-content">
-        <div class="modal-header">
-          <i class="fas fa-check-circle"></i>
-          <h3>Transaction Saved!</h3>
+    <!-- Transaction Success Modal (Bootstrap) -->
+    <div
+      class="modal fade"
+      id="success-modal"
+      tabindex="-1"
+      aria-labelledby="successModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-modal">
+          <div class="modal-header border-0">
+            <h5 class="modal-title text-success" id="successModalLabel">
+              <i class="fas fa-check-circle me-2"></i>
+              Transaction Saved!
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-center">
+            <div class="success-animation mb-3">
+              <i class="fas fa-check-circle text-success"></i>
+            </div>
+            <p class="mb-2">Your transaction has been successfully saved!</p>
+            <p class="text-muted small">
+              Transaction ID: <span id="transaction-id" class="fw-bold"></span>
+            </p>
+          </div>
+          <div class="modal-footer border-0 justify-content-center">
+            <button
+              type="button"
+              class="btn btn-success"
+              data-bs-dismiss="modal">
+              <i class="fas fa-thumbs-up me-1"></i>
+              Awesome!
+            </button>
+          </div>
         </div>
-        <div class="modal-body">
-          <p>Your transaction has been successfully saved to the database.</p>
-          <p class="transaction-id">
-            Transaction ID: <span id="transaction-id"></span>
-          </p>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-primary" id="close-modal">Close</button>
+      </div>
+    </div>
+
+    <!-- Clear Cart Confirmation Modal -->
+    <div
+      class="modal fade"
+      id="clear-cart-modal"
+      tabindex="-1"
+      aria-labelledby="clearCartModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-modal">
+          <div class="modal-header border-0">
+            <h5 class="modal-title text-warning" id="clearCartModalLabel">
+              <i class="fas fa-exclamation-triangle me-2"></i>
+              Clear Cart?
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-center">
+            <p>Are you sure you want to remove all items from your cart?</p>
+            <p class="text-muted small">This action cannot be undone.</p>
+          </div>
+          <div class="modal-footer border-0 justify-content-center">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal">
+              <i class="fas fa-times me-1"></i>
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              id="confirm-clear-cart">
+              <i class="fas fa-trash me-1"></i>
+              Clear Cart
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -182,6 +273,7 @@
     </footer>
 
     <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
     <script src="script.js"></script>
