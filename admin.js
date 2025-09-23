@@ -1,5 +1,9 @@
-// Get Supabase client from config
+// Get Supabase client from config with safety checks
 const { supabaseClient } = window;
+const hasSupabase =
+  typeof window.isSupabaseAvailable === "function"
+    ? window.isSupabaseAvailable()
+    : !!(supabaseClient && typeof supabaseClient.from === "function");
 
 // DOM Elements
 const transactionsTbody = document.getElementById("transactions-table-body");
@@ -35,7 +39,17 @@ let currentView = "grid"; // 'grid' or 'table'
 document.addEventListener("DOMContentLoaded", () => {
   console.log("Admin panel loaded");
   setupEventListeners();
-  loadTransactions();
+  if (hasSupabase) {
+    loadTransactions();
+  } else {
+    console.warn(
+      "Supabase not available - admin will run in demo mode with empty transactions."
+    );
+    transactions = [];
+    filteredTransactions = [];
+    displayTransactions();
+    updateStats();
+  }
 
   // Setup search functionality
   if (transactionSearch) {
@@ -132,6 +146,7 @@ function setupEventListeners() {
   // Close modal when clicking outside
   if (transactionModal) {
     transactionModal.addEventListener("click", (e) => {
+      // Close when clicking the overlay outside modal-content
       if (e.target === transactionModal) {
         closeModal();
       }
@@ -141,6 +156,14 @@ function setupEventListeners() {
 
 // Transaction Management
 async function loadTransactions() {
+  if (!hasSupabase) {
+    console.warn("Supabase not available - skipping loadTransactions");
+    transactions = [];
+    filteredTransactions = [];
+    displayTransactions();
+    updateStats();
+    return;
+  }
   try {
     showLoading();
 
@@ -329,10 +352,10 @@ function displayTransactions() {
 function updateStats() {
   if (!totalSales || !totalTransactions) return;
 
-  const total = transactions.reduce(
-    (sum, t) => sum + Number(t.total_amount || 0),
-    0
-  );
+  const total = transactions.reduce((sum, t) => {
+    const val = Number(t.total_amount ?? t.total ?? t.amount ?? 0);
+    return sum + (isNaN(val) ? 0 : val);
+  }, 0);
 
   totalSales.textContent = `Rp ${total.toLocaleString("id-ID")}`;
   totalTransactions.textContent = transactions.length.toString();

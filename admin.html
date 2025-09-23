@@ -150,8 +150,12 @@
       </div>
     </main>
 
-    <!-- Transaction Details Modal -->
-    <div id="transaction-modal" class="modal hidden">
+    <!-- Transaction Details Modal (uses custom app-modal to avoid Bootstrap conflicts) -->
+    <div
+      id="transaction-modal"
+      class="app-modal hidden"
+      role="dialog"
+      aria-modal="true">
       <div class="modal-content">
         <div class="modal-header">
           <h3>Transaction Details</h3>
