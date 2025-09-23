@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BookStore Admin - Management Panel</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="container">
+        <div class="header-content">
+          <div class="logo">
+            <i class="fas fa-book"></i>
+            <span>BookStore Admin</span>
+          </div>
+          <nav class="nav">
+            <a href="index.html" class="nav-link">Shop</a>
+            <a href="admin.html" class="nav-link active">Admin</a>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <!-- Animated Background -->
+    <div class="floating-circle"></div>
+    <div class="floating-circle"></div>
+    <div class="floating-circle"></div>
+    <div class="floating-circle"></div>
+    <div class="floating-circle"></div>
+
+    <!-- Main Content -->
+    <main class="main">
+      <div class="container">
+        <!-- Admin Header -->
+        <section class="admin-header-section">
+          <h1 class="section-title">
+            <i class="fas fa-chart-line"></i>
+            Transaction Management
+          </h1>
+          <p class="section-subtitle">View and manage customer transactions</p>
+        </section>
+
+        <!-- Transactions Section -->
+        <section class="admin-section" id="transactions-section">
+          <div class="section-header">
+            <h2>Recent Transactions</h2>
+            <div class="stats-cards">
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="stat-info">
+                  <h3 id="total-sales">Rp 0</h3>
+                  <p>Total Sales</p>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon">
+                  <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="stat-info">
+                  <h3 id="total-transactions">0</h3>
+                  <p>Total Orders</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="transactions-table">
+            <div class="table-container">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Date</th>
+                    <th>Customer</th>
+                    <th>Items</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="transactions-tbody">
+                  <!-- Transactions will be loaded here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Transaction Details Modal -->
+    <div id="transaction-modal" class="modal hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Transaction Details</h3>
+          <button class="modal-close" id="close-transaction-modal">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body" id="transaction-details">
+          <!-- Transaction details will be loaded here -->
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="close-modal-btn">Close</button>
+          <button class="btn btn-danger" id="delete-transaction-btn">
+            <i class="fas fa-trash"></i>
+            Delete Transaction
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error Notification -->
+    <div id="error-notification" class="error-notification hidden">
+      <div class="error-content">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span id="error-message"></span>
+        <button id="close-error" class="close-error">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Success Notification -->
+    <div id="success-notification" class="success-notification hidden">
+      <div class="success-content">
+        <i class="fas fa-check-circle"></i>
+        <span id="success-message"></span>
+      </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loading" class="loading hidden">
+      <div class="spinner"></div>
+      <p>Loading...</p>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="developer-info">
+            <i class="fas fa-code"></i>
+            <span>Made by <strong>James C</strong></span>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="admin.js"></script>
+  </body>
+</html>
