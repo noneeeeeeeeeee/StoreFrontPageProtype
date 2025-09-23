@@ -254,6 +254,9 @@ function setupEventListeners() {
   const closeSuccessModalEl = document.getElementById("close-modal");
   const closeDemoBannerEl = document.getElementById("close-demo-banner");
   const demoBannerEl = document.getElementById("demo-banner");
+  const clearCartModalEl = document.getElementById("clear-cart-modal");
+  const cancelClearCartEl = document.getElementById("cancel-clear-cart");
+  const confirmClearCartEl = document.getElementById("confirm-clear-cart");
 
   // Add to cart buttons - event delegation on grid
   if (productGridEl) {
@@ -273,7 +276,10 @@ function setupEventListeners() {
     saveTransactionEl.addEventListener("click", saveTransaction);
   }
   if (clearCartEl) {
-    clearCartEl.addEventListener("click", clearCart);
+    clearCartEl.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (clearCartModalEl) clearCartModalEl.classList.remove("hidden");
+    });
   }
 
   // Close success modal
@@ -283,6 +289,26 @@ function setupEventListeners() {
   if (successModalEl) {
     successModalEl.addEventListener("click", (e) => {
       if (e.target === successModalEl) closeSuccessModal();
+    });
+  }
+
+  // Clear cart modal controls
+  if (clearCartModalEl) {
+    clearCartModalEl.addEventListener("click", (e) => {
+      if (e.target === clearCartModalEl)
+        clearCartModalEl.classList.add("hidden");
+    });
+  }
+  if (cancelClearCartEl) {
+    cancelClearCartEl.addEventListener("click", () => {
+      if (clearCartModalEl) clearCartModalEl.classList.add("hidden");
+    });
+  }
+  if (confirmClearCartEl) {
+    confirmClearCartEl.addEventListener("click", () => {
+      cart = [];
+      updateCartDisplay();
+      if (clearCartModalEl) clearCartModalEl.classList.add("hidden");
     });
   }
 

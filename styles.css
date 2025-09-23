@@ -740,8 +740,8 @@ body::before {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-xl);
-  padding: var(--spacing-xl);
+  border-radius: 18px;
+  padding: clamp(16px, 2.5vw, 28px);
   box-shadow: var(--shadow-glass);
 }
 
@@ -852,8 +852,8 @@ body::before {
 /* Cart Summary */
 .cart-summary {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding-top: var(--spacing-lg);
-  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-xl);
+  margin-top: var(--spacing-xl);
 }
 
 .summary-row {
@@ -874,15 +874,15 @@ body::before {
 
 /* Cart Actions */
 .cart-actions {
-  margin-top: var(--spacing-lg);
+  margin-top: var(--spacing-xl);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-md);
 }
 
 .cart-actions .btn {
   width: 100%;
-  padding: var(--spacing-md);
+  padding: var(--spacing-lg);
   font-size: var(--font-size-base);
 }
 
@@ -946,8 +946,8 @@ body::before {
   background: rgba(255, 255, 255, 0.2);
 }
 
-/* Modal */
-.modal {
+/* App (custom) Modal - scoped to avoid Bootstrap conflicts */
+.app-modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -961,8 +961,7 @@ body::before {
   z-index: 1000;
   animation: fadeIn 0.3s ease-out;
 }
-
-.modal-content {
+.app-modal .modal-content {
   background: var(--bg-glass);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -973,31 +972,26 @@ body::before {
   box-shadow: var(--shadow-xl);
   animation: slideUp 0.3s ease-out;
 }
-
-.modal-header {
+.app-modal .modal-header {
   text-align: center;
   margin-bottom: var(--spacing-xl);
 }
-
-.modal-header i {
+.app-modal .modal-header i {
   font-size: 3rem;
   color: var(--success-color);
   margin-bottom: var(--spacing-md);
 }
-
-.modal-header h3 {
+.app-modal .modal-header h3 {
   font-size: var(--font-size-2xl);
   font-weight: 700;
   color: var(--text-primary);
 }
-
-.modal-body {
+.app-modal .modal-body {
   text-align: center;
   margin-bottom: var(--spacing-xl);
   color: var(--text-secondary);
 }
-
-.transaction-id {
+.app-modal .transaction-id {
   font-weight: 600;
   color: var(--text-primary);
   background: rgba(255, 255, 255, 0.05);
