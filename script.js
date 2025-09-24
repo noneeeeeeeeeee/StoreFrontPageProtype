@@ -8,32 +8,37 @@ let isDemoMode = false;
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 let products = [];
 
-// DOM Elements
-const productGrid = document.getElementById("product-grid");
-const cartCount = document.getElementById("cart-count");
-const cartItems = document.getElementById("cart-items");
-const cartSummary = document.getElementById("cart-summary");
-const cartActions = document.getElementById("cart-actions");
-const subtotalElement = document.getElementById("subtotal");
-const taxElement = document.getElementById("tax");
-const totalElement = document.getElementById("total");
-const successModal = document.getElementById("success-modal");
-const transactionId = document.getElementById("transaction-id");
-const closeSuccessModalBtn = document.getElementById("close-modal");
-const saveTransactionBtn = document.getElementById("save-transaction");
-const clearCartBtn = document.getElementById("clear-cart");
-const loading = document.getElementById("loading");
-const errorNotification = document.getElementById("error-notification");
-const errorMessage = document.getElementById("error-message");
-const closeError = document.getElementById("close-error");
-const successNotification = document.getElementById("success-notification");
-const successMessage = document.getElementById("success-message");
-const cartAnimation = document.getElementById("cart-animation");
-const demoBanner = document.getElementById("demo-banner");
-const demoIndicator = document.getElementById("demo-indicator");
-const closeDemoBanner = document.getElementById("close-demo-banner");
-const clearCartModal = document.getElementById("clear-cart-modal");
-const confirmClearCartBtn = document.getElementById("confirm-clear-cart");
+// Cache DOM elements
+let productGrid, cartItems, cartSummary, cartActions;
+let subtotalElement, taxElement, totalElement, successModal, transactionId;
+let saveTransactionBtn, clearCartBtn;
+let errorNotification, errorMessage, closeError;
+let clearCartModal, confirmClearCartBtn;
+let transactionDate, transactionItems, transactionTotal, transactionItemsList;
+
+// Initialize DOM elements cache
+function initDOMElements() {
+  productGrid = document.getElementById("product-grid");
+  cartItems = document.getElementById("cart-items");
+  cartSummary = document.getElementById("cart-summary");
+  cartActions = document.getElementById("cart-actions");
+  subtotalElement = document.getElementById("subtotal");
+  taxElement = document.getElementById("tax");
+  totalElement = document.getElementById("total");
+  successModal = document.getElementById("success-modal");
+  transactionId = document.getElementById("transaction-id");
+  saveTransactionBtn = document.getElementById("save-transaction");
+  clearCartBtn = document.getElementById("clear-cart");
+  errorNotification = document.getElementById("error-notification");
+  errorMessage = document.getElementById("error-message");
+  closeError = document.getElementById("close-error");
+  clearCartModal = document.getElementById("clear-cart-modal");
+  confirmClearCartBtn = document.getElementById("confirm-clear-cart");
+  transactionDate = document.getElementById("transaction-date");
+  transactionItems = document.getElementById("transaction-items");
+  transactionTotal = document.getElementById("transaction-total");
+  transactionItemsList = document.getElementById("transaction-items-list");
+}
 
 // Placeholder products data for BookStore
 const placeholderProducts = [
@@ -107,7 +112,11 @@ const placeholderProducts = [
 // Initialize the application
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("DOM Content Loaded");
-  console.log("Product grid element:", document.getElementById("product-grid"));
+
+  // Initialize DOM elements cache for performance
+  initDOMElements();
+
+  console.log("Product grid element:", productGrid);
 
   await initializeApp();
 });
@@ -292,6 +301,11 @@ function setupEventListeners() {
     });
   }
 
+  // Print receipt button
+  if (printReceiptBtn) {
+    printReceiptBtn.addEventListener("click", printReceipt);
+  }
+
   // Clear cart modal controls
   if (clearCartModalEl) {
     clearCartModalEl.addEventListener("click", (e) => {
@@ -333,6 +347,8 @@ function handleAddToCart(event) {
   // Support clicks on nested elements inside the button (e.g., icon)
   const button = event.target.closest(".add-to-cart");
   if (!button) return;
+
+  event.stopPropagation(); // Prevent grid listener from also firing
 
   const productId = parseInt(button.getAttribute("data-product-id"));
   const qtyInput = document.getElementById(`qty-${productId}`);
@@ -377,21 +393,8 @@ function addToCart(product, quantity) {
   updateCartDisplay();
   updateCartSummary();
 
-  // Show cart animation
-  showCartAnimation();
-
-  // Show success message
-  showSuccess(`${product.name} added to cart!`);
-
-  // Update cart count
-  updateCartCount();
-
-  // Animate the cart button to show item was added
-  const cartBtn = document.querySelector(".cart-btn");
-  if (cartBtn) {
-    cartBtn.classList.add("cart-updated");
-    setTimeout(() => cartBtn.classList.remove("cart-updated"), 600);
-  }
+  // Show success message (simplified)
+  console.log(`${product.name} added to cart!`);
 }
 
 // Show cart animation
@@ -493,35 +496,38 @@ function handleQuantityChange(event) {
   updateCartDisplay();
 }
 
-// Update cart display
+// Update cart display - optimized for performance
 function updateCartDisplay() {
-  // persist
-  localStorage.setItem("cart", JSON.stringify(cart));
+  // Batch DOM updates using requestAnimationFrame for better performance
+  requestAnimationFrame(() => {
+    // persist
+    localStorage.setItem("cart", JSON.stringify(cart));
 
-  if (cartCount)
-    cartCount.textContent = cart.reduce(
-      (total, item) => total + item.quantity,
-      0
-    );
-
-  if (cart.length === 0) {
-    if (cartItems) {
-      cartItems.innerHTML = `
-            <div class="empty-cart">
-                <i class="fas fa-shopping-cart"></i>
-                <p>Your cart is empty</p>
-                <small>Add some products to get started</small>
-            </div>
-        `;
+    // Update cart count
+    if (cartCount) {
+      const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+      cartCount.textContent = totalItems;
     }
-    if (cartSummary) cartSummary.style.display = "none";
-    if (cartActions) cartActions.style.display = "none";
-  } else {
-    displayCartItems();
-    updateCartSummary();
-    if (cartSummary) cartSummary.style.display = "block";
-    if (cartActions) cartActions.style.display = "block";
-  }
+
+    if (cart.length === 0) {
+      if (cartItems) {
+        cartItems.innerHTML = `
+              <div class="empty-cart">
+                  <i class="fas fa-shopping-cart"></i>
+                  <p>Your cart is empty</p>
+                  <small>Add some products to get started</small>
+              </div>
+          `;
+      }
+      if (cartSummary) cartSummary.style.display = "none";
+      if (cartActions) cartActions.style.display = "none";
+    } else {
+      displayCartItems();
+      updateCartSummary();
+      if (cartSummary) cartSummary.style.display = "block";
+      if (cartActions) cartActions.style.display = "block";
+    }
+  });
 }
 
 // Display cart items
@@ -613,19 +619,68 @@ async function saveTransaction() {
       throw error;
     }
 
-    // Show success modal
-    if (transactionId)
-      transactionId.textContent = data.id || "TXN-" + Date.now();
+    // Populate enhanced success modal
+    populateTransactionModal(data, transactionData);
+
     if (successModal) successModal.classList.remove("hidden");
 
     // Clear cart
     cart = [];
     updateCartDisplay();
+    updateCartSummary();
+    updateCartCount();
   } catch (error) {
     console.error("Error saving transaction:", error);
     showError("Failed to save transaction: " + error.message);
   } finally {
     hideLoading();
+  }
+}
+
+// Populate transaction modal with data
+function populateTransactionModal(dbData, transactionData) {
+  // Set transaction ID
+  if (transactionId) {
+    transactionId.textContent = dbData.id || "TXN-" + Date.now();
+  }
+
+  // Set transaction date
+  if (transactionDate) {
+    const date = new Date();
+    transactionDate.textContent =
+      date.toLocaleDateString() + " " + date.toLocaleTimeString();
+  }
+
+  // Set number of items
+  if (transactionItems) {
+    const itemCount = transactionData.items.reduce(
+      (total, item) => total + item.quantity,
+      0
+    );
+    transactionItems.textContent = `${itemCount} item${
+      itemCount !== 1 ? "s" : ""
+    }`;
+  }
+
+  // Set total amount
+  if (transactionTotal) {
+    transactionTotal.textContent = `Rp ${formatPrice(transactionData.total)}`;
+  }
+
+  // Populate items list
+  if (transactionItemsList) {
+    transactionItemsList.innerHTML = "";
+    transactionData.items.forEach((item) => {
+      const row = document.createElement("div");
+      row.className = "table-row";
+      row.innerHTML = `
+        <div class="item-name">${item.product_name}</div>
+        <div class="item-quantity">${item.quantity}</div>
+        <div class="item-price">Rp ${formatPrice(item.price)}</div>
+        <div class="item-total">Rp ${formatPrice(item.subtotal)}</div>
+      `;
+      transactionItemsList.appendChild(row);
+    });
   }
 }
 
@@ -637,6 +692,11 @@ function clearCart() {
     cart = [];
     updateCartDisplay();
   }
+}
+
+// Print receipt function
+function printReceipt() {
+  window.print();
 }
 
 // Close success modal
@@ -713,22 +773,18 @@ document.addEventListener(
 function initializeDemoMode() {
   const demoBanner = document.getElementById("demo-banner");
   const demoIndicator = document.getElementById("demo-indicator");
-  const closeButton = demoBanner?.querySelector(".demo-close");
 
   // Show demo banner and indicator
   if (isDemoMode) {
-    if (demoBanner) demoBanner.style.display = "block";
+    if (demoBanner) {
+      demoBanner.classList.remove("hidden");
+    }
     if (demoIndicator) demoIndicator.style.display = "inline";
   } else {
-    if (demoBanner) demoBanner.style.display = "none";
+    if (demoBanner) {
+      demoBanner.classList.add("hidden");
+    }
     if (demoIndicator) demoIndicator.style.display = "none";
-  }
-
-  // Handle demo banner close
-  if (closeButton) {
-    closeButton.addEventListener("click", () => {
-      demoBanner.style.display = "none";
-    });
   }
 }
 
@@ -740,14 +796,50 @@ function enableDemoMode() {
   initializeDemoMode();
 }
 
+// Check Supabase connection
+async function checkSupabaseConnection() {
+  try {
+    if (!supabaseClient) {
+      throw new Error("Supabase client not available");
+    }
+
+    // Simple connection test
+    const { data, error } = await supabaseClient
+      .from("products")
+      .select("count")
+      .limit(1);
+
+    if (error && error.code !== "PGRST116") {
+      // PGRST116 is "relation does not exist"
+      throw error;
+    }
+
+    return true;
+  } catch (error) {
+    console.warn("Supabase connection failed:", error.message);
+    return false;
+  }
+}
+
 // Initialize the app
 async function initializeApp() {
   console.log("Initializing app...");
-  initializeDemoMode();
 
   try {
+    // Check Supabase connection first
+    const isConnected = await checkSupabaseConnection();
+
+    if (!isConnected) {
+      throw new Error("Database connection failed");
+    }
+
     await initializeDatabase();
     await loadProducts();
+
+    // If we got here, connection is working
+    isDemoMode = false;
+    initializeDemoMode();
+
     renderProducts();
     updateCartDisplay();
     updateCartCount();

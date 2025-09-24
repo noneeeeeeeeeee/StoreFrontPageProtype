@@ -7,7 +7,7 @@ const SUPABASE_ANON_KEY =
 const APP_CONFIG = {
   name: "BookStore Cart",
   version: "1.0.0",
-  developer: "John Doe",
+  developer: "JamesC",
   description: "Modern store front with glassmorphism design",
   features: {
     taxRate: 0.1, // 10% tax
@@ -24,7 +24,7 @@ let supabase;
 try {
   supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     auth: {
-      persistSession: false, // Since this is a public store, no user sessions needed
+      persistSession: false,
     },
     realtime: {
       params: {
@@ -34,7 +34,6 @@ try {
   });
 } catch (error) {
   console.error("Failed to initialize Supabase client:", error);
-  // App will work in offline mode
 }
 
 // Export for use in other scripts
