@@ -81,7 +81,7 @@
       const progressText = progressBar.querySelector(".progress-text");
 
       const duration = 7500;
-      const interval = 100; // Smoother updates
+      const interval = 100;
       const step = 100 / (duration / interval);
 
       const messageInterval = setInterval(() => {
@@ -100,8 +100,7 @@
       const timer = setInterval(() => {
         progress += step;
 
-        // Add some random variation for realistic loading (fake loading effect)
-        const variation = (Math.random() - 0.5) * 2; // -1 to 1
+        const variation = (Math.random() - 0.5) * 2;
         let displayProgress = progress + variation;
 
         if (progress >= 100) {
@@ -115,7 +114,6 @@
           }, 500);
         }
 
-        // Ensure progress doesn't go backwards visually
         displayProgress = Math.max(
           displayProgress,
           parseFloat(progressBar.style.width) || 0
@@ -443,7 +441,6 @@
         }
       }
 
-      /* Enhanced responsiveness */
       @media (max-width: 768px) {
         .loading-text {
           font-size: 20px;
