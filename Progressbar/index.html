@@ -8,37 +8,122 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
   </head>
   <body>
+    <div class="animated-bg"></div>
     <div class="loader">
-      <div class="emoji"><img src="./media/dog.gif" alt="gdog" /></div>
-      <div class="loading-text">Membuka scrapbook kenangan...</div>
-      <div class="progress w-75 mx-auto">
-        <div
-          id="progressBar"
-          class="progress-bar progress-bar-striped progress-bar-animated bg-success"
-          role="progressbar"
-          style="width: 0%"
-        >
-          0%
+      <div class="emoji-container">
+        <img src="./media/dog.gif" alt="gdog" class="dog-gif" />
+        <div class="sparkles">
+          <i class="fas fa-sparkles sparkle sparkle-1"></i>
+          <i class="fas fa-sparkles sparkle sparkle-2"></i>
+          <i class="fas fa-sparkles sparkle sparkle-3"></i>
+          <i class="fas fa-sparkles sparkle sparkle-4"></i>
+        </div>
+      </div>
+      <div class="loading-text" id="loadingText">Opening scrapbook...</div>
+      <div class="progress-container">
+        <div class="progress w-75 mx-auto">
+          <div
+            id="progressBar"
+            class="progress-bar progress-bar-striped progress-bar-animated"
+            role="progressbar"
+            style="width: 0%"
+          >
+            <span class="progress-text">0%</span>
+          </div>
         </div>
       </div>
     </div>
+
+    <footer class="footer">
+      <div class="footer-content">
+        <span>By: <strong>James C</strong></span>
+      </div>
+    </footer>
     <script>
+      const motdMessages = [
+        "Opening scrapbook...",
+        "Loading memories...",
+        "Dusting off old photos...",
+        "Preparing nostalgia...",
+        "Gathering sweet moments...",
+        "Unlocking the past...",
+        "Brewing some memories...",
+        "Collecting cherished times...",
+        "Warming up the time machine...",
+        "Polishing old treasures...",
+        "Retrieving happy moments...",
+        "Loading sentimental journey...",
+        "Preparing memory lane...",
+        "Organizing beautiful chaos...",
+        "Awakening dormant smiles...",
+        "Compiling heartfelt stories...",
+        "Shuffling through good times...",
+        "Preparing emotional rollercoaster...",
+        "Loading friendship archives...",
+        "Assembling joy collection...",
+        "Preparing laughter database...",
+        "Initializing happiness protocol...",
+        "Loading adventure catalog...",
+        "Preparing memory showcase...",
+        "Opening treasure chest...",
+      ];
+
       let progress = 0;
+      let currentMessageIndex = 0;
       const progressBar = document.getElementById("progressBar");
-      const duration = 15000;
-      const interval = 300;
+      const loadingText = document.getElementById("loadingText");
+      const progressText = progressBar.querySelector(".progress-text");
+
+      const duration = 7500;
+      const interval = 100; // Smoother updates
       const step = 100 / (duration / interval);
+
+      const messageInterval = setInterval(() => {
+        currentMessageIndex = (currentMessageIndex + 1) % motdMessages.length;
+        loadingText.textContent = motdMessages[currentMessageIndex];
+        loadingText.style.animation = "fadeInOut 0.5s ease-in-out";
+        setTimeout(() => {
+          loadingText.style.animation = "";
+        }, 500);
+      }, 2000);
+
+      // Set initial random message
+      currentMessageIndex = Math.floor(Math.random() * motdMessages.length);
+      loadingText.textContent = motdMessages[currentMessageIndex];
+
       const timer = setInterval(() => {
         progress += step;
+
+        // Add some random variation for realistic loading (fake loading effect)
+        const variation = (Math.random() - 0.5) * 2; // -1 to 1
+        let displayProgress = progress + variation;
+
         if (progress >= 100) {
-          progress = 100;
+          displayProgress = 100;
           clearInterval(timer);
-          window.location.href = "home.html";
+          clearInterval(messageInterval);
+          loadingText.textContent = "Ready! Opening scrapbook...";
+
+          setTimeout(() => {
+            window.location.href = "home.html";
+          }, 500);
         }
-        progressBar.style.width = progress + "%";
-        progressBar.innerText = Math.floor(progress) + "%";
+
+        // Ensure progress doesn't go backwards visually
+        displayProgress = Math.max(
+          displayProgress,
+          parseFloat(progressBar.style.width) || 0
+        );
+        displayProgress = Math.min(displayProgress, 100);
+
+        progressBar.style.width = displayProgress + "%";
+        progressText.textContent = Math.floor(displayProgress) + "%";
       }, interval);
     </script>
 
@@ -48,29 +133,334 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        background: #fdf6f0;
+        background: linear-gradient(45deg, #fdf6f0, #f8e8dc, #fdf6f0, #ede0d3);
+        background-size: 400% 400%;
+        animation: gradientShift 8s ease-in-out infinite;
         font-family: "Comic Sans MS", cursive;
+        margin: 0;
+        overflow: hidden;
+        position: relative;
       }
+
+      @keyframes gradientShift {
+        0%,
+        100% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+      }
+
+      .animated-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+            circle at 20% 80%,
+            rgba(255, 182, 193, 0.3) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 80% 20%,
+            rgba(173, 216, 230, 0.3) 0%,
+            transparent 50%
+          );
+        animation: floatingBubbles 12s ease-in-out infinite;
+        z-index: -1;
+      }
+
+      @keyframes floatingBubbles {
+        0%,
+        100% {
+          transform: translateY(0px) rotate(0deg);
+        }
+        33% {
+          transform: translateY(-20px) rotate(5deg);
+        }
+        66% {
+          transform: translateY(10px) rotate(-3deg);
+        }
+      }
+
       .loader {
         text-align: center;
+        z-index: 10;
+        position: relative;
       }
+
+      .emoji-container {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 30px;
+      }
+
+      .dog-gif {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: 4px solid #fff;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        animation: bounce 2s ease-in-out infinite,
+          glow 3s ease-in-out infinite alternate;
+      }
+
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0px) scale(1);
+        }
+        50% {
+          transform: translateY(-15px) scale(1.05);
+        }
+      }
+
+      @keyframes glow {
+        0% {
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2),
+            0 0 20px rgba(255, 215, 0, 0.3);
+        }
+        100% {
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2),
+            0 0 30px rgba(255, 215, 0, 0.6);
+        }
+      }
+
+      .sparkles {
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        right: -10px;
+        bottom: -10px;
+        pointer-events: none;
+      }
+
+      .sparkle {
+        position: absolute;
+        color: #ffd700;
+        font-size: 16px;
+        animation: sparkleFloat 3s ease-in-out infinite;
+      }
+
+      .sparkle-1 {
+        top: 10%;
+        left: 10%;
+        animation-delay: 0s;
+      }
+
+      .sparkle-2 {
+        top: 20%;
+        right: 15%;
+        animation-delay: 0.8s;
+      }
+
+      .sparkle-3 {
+        bottom: 25%;
+        left: 20%;
+        animation-delay: 1.6s;
+      }
+
+      .sparkle-4 {
+        bottom: 15%;
+        right: 10%;
+        animation-delay: 2.4s;
+      }
+
+      @keyframes sparkleFloat {
+        0%,
+        100% {
+          transform: translateY(0px) scale(0.8);
+          opacity: 0.6;
+        }
+        50% {
+          transform: translateY(-20px) scale(1.2);
+          opacity: 1;
+        }
+      }
+
       .loading-text {
         margin-top: 20px;
-        font-size: 20px;
-        color: #444;
+        margin-bottom: 30px;
+        font-size: 24px;
+        font-weight: bold;
+        color: #2c3e50;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        animation: textPulse 2s ease-in-out infinite;
+        min-height: 30px;
       }
-      .loader {
-        text-align: center;
+
+      @keyframes textPulse {
+        0%,
+        100% {
+          transform: scale(1);
+          color: #2c3e50;
+        }
+        50% {
+          transform: scale(1.02);
+          color: #34495e;
+        }
       }
-      .loading-text {
+
+      @keyframes fadeInOut {
+        0% {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        50% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+      }
+
+      .progress-container {
         margin-top: 20px;
-        font-size: 20px;
-        color: #444;
       }
+
       .progress {
-        margin-top: 20px;
-        height: 20px;
-        border-radius: 10px;
+        height: 30px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.3);
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1),
+          0 4px 15px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        position: relative;
+      }
+
+      .progress-bar {
+        background: linear-gradient(
+          45deg,
+          #ff6b6b,
+          #4ecdc4,
+          #45b7d1,
+          #96ceb4,
+          #feca57
+        );
+        background-size: 300% 300%;
+        animation: gradientFlow 3s ease-in-out infinite,
+          progressShine 2s ease-in-out infinite;
+        border-radius: 18px;
+        position: relative;
+        transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow: hidden;
+      }
+
+      .progress-bar::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.4),
+          transparent
+        );
+        animation: shimmer 2s infinite;
+      }
+
+      @keyframes gradientFlow {
+        0%,
+        100% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+      }
+
+      @keyframes progressShine {
+        0%,
+        100% {
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3),
+            0 0 20px rgba(78, 205, 196, 0.3);
+        }
+        50% {
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5),
+            0 0 30px rgba(78, 205, 196, 0.5);
+        }
+      }
+
+      @keyframes shimmer {
+        0% {
+          left: -100%;
+        }
+        100% {
+          left: 100%;
+        }
+      }
+
+      .progress-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-weight: bold;
+        color: white;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        font-size: 16px;
+        z-index: 10;
+      }
+
+      .footer {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 100;
+      }
+
+      .footer-content {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 8px 16px;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        font-size: 14px;
+        color: #555;
+        animation: footerGlow 4s ease-in-out infinite;
+      }
+
+      .footer-content strong {
+        color: #2c3e50;
+        font-weight: bold;
+      }
+
+      @keyframes footerGlow {
+        0%,
+        100% {
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        50% {
+          box-shadow: 0 2px 15px rgba(78, 205, 196, 0.3);
+        }
+      }
+
+      /* Enhanced responsiveness */
+      @media (max-width: 768px) {
+        .loading-text {
+          font-size: 20px;
+        }
+
+        .dog-gif {
+          width: 100px;
+          height: 100px;
+        }
+
+        .progress {
+          height: 25px;
+        }
+
+        .progress-text {
+          font-size: 14px;
+        }
       }
     </style>
   </body>
