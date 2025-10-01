@@ -3,129 +3,155 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Project Hub</title>
+    <title>NICHOLAS XII-4 | PROJECT HUB</title>
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
       rel="stylesheet"
     />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue:wght@400&family=Roboto+Condensed:wght@400;700;900&display=swap"
       rel="stylesheet"
     />
   </head>
   <body>
-    <div class="background-overlay"></div>
-    <div class="animated-bg">
-      <div class="bg-element bg-element-1"></div>
-      <div class="bg-element bg-element-2"></div>
-      <div class="bg-element bg-element-3"></div>
-    </div>
+    <!-- Industrial Background Elements -->
+    <div class="bg-texture"></div>
+    <div class="bg-grid"></div>
+    <div class="bg-noise"></div>
 
+    <!-- Asymmetric Header -->
     <header class="header">
-      <div class="header-content">
-        <div class="logo">
-          <i class="fas fa-code"></i>
-          <span>Nicholas XII-4</span>
+      <div class="header-frame">
+        <div class="header-left">
+          <div class="logo-block">
+            <div class="logo-icon">
+              <i class="fas fa-cogs"></i>
+            </div>
+            <div class="logo-text">
+              <div class="company-name">Nobindes.inc</div>
+              <div class="tagline">Demo Projects</div>
+            </div>
+          </div>
         </div>
-        <div class="header-subtitle">Student Project Portfolio</div>
+        <div class="header-right">
+          <div class="status-bar">
+            <div class="status-item">
+              <span class="status-label">STATUS:</span>
+              <span class="status-value active">ONLINE</span>
+            </div>
+          </div>
+        </div>
       </div>
     </header>
 
+    <!-- Main Content with Asymmetric Layout -->
     <main class="main-content">
-      <div class="container">
-        <div class="hero-section">
-          <h1 class="hero-title">
-            <i class="fas fa-rocket"></i>
-            Project Hub
-          </h1>
-          <p class="hero-subtitle">
-            Explore my collection of interactive projects and demos
-          </p>
+      <div class="content-wrapper">
+        <!-- Large Title Block -->
+        <div class="title-section">
+          <div class="title-frame">
+            <h1 class="main-title">PROJECT<br />COLLECTION</h1>
+            <div class="title-accent"></div>
+          </div>
+          <div class="subtitle-block">
+            <p>EXPLORE INTERACTIVE DEMOS & APPLICATIONS</p>
+          </div>
         </div>
 
-        <div class="projects-grid">
-          <a href="bookstore/index.html" class="project-card bookstore-card">
-            <div class="project-icon">
-              <i class="fas fa-store"></i>
+        <!-- Asymmetric Project Grid -->
+        <div class="projects-container">
+          <!-- Large Featured Project -->
+          <a href="bookstore/index.html" class="project-panel large-panel">
+            <div class="panel-header">
+              <div class="panel-icon">
+                <i class="fas fa-store"></i>
+              </div>
+              <div class="panel-number">01</div>
             </div>
-            <div class="project-content">
-              <h3 class="project-title">BookStore</h3>
-              <p class="project-description">
-                Modern e-commerce platform with neumorphic design and real-time
-                cart functionality
+            <div class="panel-content">
+              <h2 class="panel-title">BOOKSTORE</h2>
+              <div class="panel-subtitle">DEMO PLATFORM</div>
+              <p class="panel-description">
+                FULL-STACK WEB APPLICATION WITH REAL-TIME CART FUNCTIONALITY AND
+                MODERN NEUMORPHIC DESIGN SYSTEM
               </p>
-              <div class="project-tags">
-                <span class="tag">JavaScript</span>
-                <span class="tag">Supabase</span>
-                <span class="tag">CSS3</span>
+              <div class="tech-tags">
+                <span class="tech-tag">JAVASCRIPT</span>
+                <span class="tech-tag">SUPABASE</span>
+                <span class="tech-tag">CSS3</span>
               </div>
             </div>
-            <div class="project-arrow">
-              <i class="fas fa-arrow-right"></i>
+            <div class="panel-footer">
+              <div class="access-btn">
+                <span>ACCESS PROJECT</span>
+                <i class="fas fa-arrow-right"></i>
+              </div>
             </div>
           </a>
 
-          <a
-            href="Progressbar/index.html"
-            class="project-card progressbar-card"
-          >
-            <div class="project-icon">
-              <i class="fas fa-spinner"></i>
+          <!-- Medium Project Panel -->
+          <a href="Progressbar/index.html" class="project-panel medium-panel">
+            <div class="panel-header">
+              <div class="panel-icon">
+                <i class="fas fa-photo-video"></i>
+              </div>
+              <div class="panel-number">02</div>
             </div>
-            <div class="project-content">
-              <h3 class="project-title">Scrapbook</h3>
-              <p class="project-description">
-                Animated loading screen with dynamic messages and smooth
-                progress visualization
+            <div class="panel-content">
+              <h2 class="panel-title">SCRAPBOOK</h2>
+              <div class="panel-subtitle">LOADING SYSTEM</div>
+              <p class="panel-description">
+                ANIMATED LOADING INTERFACE WITH DYNAMIC MESSAGING
               </p>
-              <div class="project-tags">
-                <span class="tag">Animation</span>
-                <span class="tag">Bootstrap</span>
-                <span class="tag">UI/UX</span>
+              <div class="tech-tags">
+                <span class="tech-tag">ANIMATION</span>
+                <span class="tech-tag">BOOTSTRAP</span>
               </div>
             </div>
-            <div class="project-arrow">
-              <i class="fas fa-arrow-right"></i>
+            <div class="panel-footer">
+              <div class="access-btn">
+                <span>LAUNCH</span>
+                <i class="fas fa-external-link-alt"></i>
+              </div>
             </div>
           </a>
 
-          <!-- Placeholder for future projects -->
-          <div class="project-card coming-soon-card">
-            <div class="project-icon">
-              <i class="fas fa-plus"></i>
-            </div>
-            <div class="project-content">
-              <h3 class="project-title">More Coming Soon</h3>
-              <p class="project-description">
-                Additional projects and experiments will be added here as
-                development continues
-              </p>
-              <div class="project-tags">
-                <span class="tag">Future</span>
+          <!-- Small Coming Soon Panel -->
+          <div class="project-panel small-panel disabled">
+            <div class="panel-header">
+              <div class="panel-icon">
+                <i class="fas fa-wrench"></i>
               </div>
+              <div class="panel-number">03</div>
+            </div>
+            <div class="panel-content">
+              <h2 class="panel-title">MORE</h2>
+              <div class="panel-subtitle">IN DEVELOPMENT</div>
+              <p class="panel-description">ADDITIONAL PROJECTS COMING SOON</p>
             </div>
           </div>
         </div>
       </div>
     </main>
 
+    <!-- Asymmetric Footer -->
     <footer class="footer">
-      <div class="footer-content">
+      <div class="footer-frame">
         <div class="footer-left">
-          <span
-            >Made with <i class="fas fa-heart"></i> by
-            <strong>James C</strong></span
-          >
+          <div class="copyright">
+            <span>ENGINEERED BY</span>
+            <strong>JAMES C</strong>
+          </div>
         </div>
         <div class="footer-right">
-          <div class="social-links">
-            <a href="#" class="social-link" title="GitHub">
+          <div class="social-panel">
+            <a href="#" class="social-btn" title="GitHub">
               <i class="fab fa-github"></i>
             </a>
-            <a href="#" class="social-link" title="LinkedIn">
+            <a href="#" class="social-btn" title="LinkedIn">
               <i class="fab fa-linkedin"></i>
             </a>
-            <a href="#" class="social-link" title="Portfolio">
+            <a href="#" class="social-btn" title="Portfolio">
               <i class="fas fa-globe"></i>
             </a>
           </div>
@@ -141,192 +167,260 @@
       }
 
       body {
-        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
-          Roboto, sans-serif;
-        background: #0a0a0a;
-        color: #ffffff;
+        font-family: "Roboto Condensed", sans-serif;
+        background: #3c3530;
+        color: #f4f1ea;
         min-height: 100vh;
         position: relative;
         overflow-x: hidden;
       }
 
-      /* Background Animation */
-      .background-overlay {
+      /* Industrial Background Textures */
+      .bg-texture {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        opacity: 0.1;
+        background: radial-gradient(
+            circle at 25% 25%,
+            #4a453d 0%,
+            transparent 50%
+          ),
+          radial-gradient(circle at 75% 75%, #5c5448 0%, transparent 50%),
+          linear-gradient(135deg, #3c3530 0%, #4a453d 50%, #3c3530 100%);
+        z-index: -3;
+      }
+
+      .bg-grid {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: linear-gradient(
+            rgba(212, 181, 126, 0.15) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, rgba(212, 181, 126, 0.15) 1px, transparent 1px);
+        background-size: 50px 50px;
         z-index: -2;
+        animation: gridShift 20s linear infinite;
       }
 
-      .animated-bg {
+      @keyframes gridShift {
+        0% {
+          transform: translate(0, 0);
+        }
+        100% {
+          transform: translate(50px, 50px);
+        }
+      }
+
+      .bg-noise {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
+        background-image: radial-gradient(
+            circle at 20% 30%,
+            rgba(168, 129, 61, 0.12) 0%,
+            transparent 20%
+          ),
+          radial-gradient(
+            circle at 80% 70%,
+            rgba(212, 181, 126, 0.08) 0%,
+            transparent 25%
+          );
         z-index: -1;
-        overflow: hidden;
+        animation: pulse 8s ease-in-out infinite;
       }
 
-      .bg-element {
-        position: absolute;
-        border-radius: 50%;
-        background: linear-gradient(
-          45deg,
-          rgba(102, 126, 234, 0.1),
-          rgba(118, 75, 162, 0.1)
-        );
-        animation: float 20s infinite ease-in-out;
-      }
-
-      .bg-element-1 {
-        width: 300px;
-        height: 300px;
-        top: 10%;
-        left: 10%;
-        animation-delay: 0s;
-      }
-
-      .bg-element-2 {
-        width: 200px;
-        height: 200px;
-        top: 60%;
-        right: 20%;
-        animation-delay: -7s;
-      }
-
-      .bg-element-3 {
-        width: 150px;
-        height: 150px;
-        bottom: 20%;
-        left: 60%;
-        animation-delay: -14s;
-      }
-
-      @keyframes float {
+      @keyframes pulse {
         0%,
         100% {
-          transform: translateY(0px) rotate(0deg);
-          opacity: 0.3;
+          opacity: 0.7;
         }
-        33% {
-          transform: translateY(-30px) rotate(120deg);
-          opacity: 0.5;
-        }
-        66% {
-          transform: translateY(30px) rotate(240deg);
-          opacity: 0.2;
+        50% {
+          opacity: 1;
         }
       }
 
-      /* Header */
+      /* Asymmetric Header */
       .header {
-        padding: 2rem 0;
-        text-align: center;
+        padding: 1rem 0;
+        background: linear-gradient(135deg, #4a453d 0%, #3c3530 100%);
+        border-bottom: 3px solid #d4b57e;
         position: relative;
-        z-index: 10;
       }
 
-      .header-content {
-        max-width: 1200px;
+      .header::after {
+        content: "";
+        position: absolute;
+        bottom: -3px;
+        left: 0;
+        width: 60%;
+        height: 3px;
+        background: #a8813d;
+      }
+
+      .header-frame {
+        max-width: 1400px;
         margin: 0 auto;
         padding: 0 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
       }
 
-      .logo {
+      .logo-block {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .logo-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #d4b57e, #a8813d);
+        border: 2px solid #6b5d4f;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 1rem;
+        font-size: 1.5rem;
+        color: #2c2822;
+        transform: skew(-10deg);
+        box-shadow: 0 0 20px rgba(168, 129, 61, 0.4);
+      }
+
+      .company-name {
+        font-family: "Bebas Neue", sans-serif;
         font-size: 2rem;
-        font-weight: 800;
-        margin-bottom: 0.5rem;
-      }
-
-      .logo i {
-        color: #667eea;
-        font-size: 2.5rem;
-      }
-
-      .header-subtitle {
-        color: #a0a0a0;
-        font-size: 1.1rem;
         font-weight: 400;
+        color: #d4b57e;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        letter-spacing: 2px;
+      }
+
+      .tagline {
+        font-size: 0.9rem;
+        color: #c0b49a;
+        font-weight: 400;
+        letter-spacing: 1px;
+      }
+
+      .status-bar {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .status-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(168, 129, 61, 0.3);
+        padding: 0.5rem 1rem;
+        border: 1px solid #d4b57e;
+        transform: skew(-5deg);
+      }
+
+      .status-label {
+        font-size: 0.8rem;
+        color: #c0b49a;
+      }
+
+      .status-value.active {
+        color: #7fb069;
+        font-weight: bold;
+        text-shadow: 0 0 10px #7fb069;
       }
 
       /* Main Content */
       .main-content {
-        flex: 1;
-        padding: 2rem 0;
+        padding: 3rem 0;
       }
 
-      .container {
-        max-width: 1200px;
+      .content-wrapper {
+        max-width: 1400px;
         margin: 0 auto;
         padding: 0 2rem;
       }
 
-      .hero-section {
-        text-align: center;
+      /* Title Section */
+      .title-section {
         margin-bottom: 4rem;
+        position: relative;
       }
 
-      .hero-title {
-        font-size: 3.5rem;
-        font-weight: 800;
-        margin-bottom: 1rem;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 1rem;
+      .title-frame {
+        position: relative;
+        display: inline-block;
       }
 
-      .hero-title i {
-        color: #667eea;
-        -webkit-text-fill-color: #667eea;
-      }
-
-      .hero-subtitle {
-        font-size: 1.3rem;
-        color: #a0a0a0;
+      .main-title {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 5rem;
         font-weight: 400;
-        max-width: 600px;
-        margin: 0 auto;
+        color: #f4f1ea;
+        text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
+        letter-spacing: 4px;
+        line-height: 0.9;
+        transform: skew(-2deg);
+        margin-bottom: 1rem;
       }
 
-      /* Projects Grid */
-      .projects-grid {
+      .title-accent {
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 80%;
+        height: 6px;
+        background: linear-gradient(90deg, #d4b57e, #a8813d, transparent);
+        transform: skew(-10deg);
+      }
+
+      .subtitle-block {
+        background: rgba(168, 129, 61, 0.3);
+        border-left: 4px solid #d4b57e;
+        padding: 1rem 2rem;
+        margin-top: 2rem;
+        transform: skew(-1deg);
+        display: inline-block;
+      }
+
+      .subtitle-block p {
+        font-size: 1.1rem;
+        color: #d4b57e;
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+
+      /* Asymmetric Project Grid */
+      .projects-container {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        grid-template-columns: 2fr 1fr;
+        grid-template-rows: auto auto;
         gap: 2rem;
-        margin-top: 3rem;
+        grid-template-areas:
+          "large medium"
+          "large small";
       }
 
-      .project-card {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 20px;
-        padding: 2rem;
+      .project-panel {
+        background: linear-gradient(135deg, #4a453d 0%, #3c3530 100%);
+        border: 2px solid #6b5d4f;
+        border-left: 6px solid #d4b57e;
         text-decoration: none;
         color: inherit;
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         position: relative;
         overflow: hidden;
+        transition: all 0.3s ease;
+        transform: skew(-1deg);
       }
 
-      .project-card::before {
+      .project-panel::before {
         content: "";
         position: absolute;
         top: 0;
@@ -336,210 +430,283 @@
         background: linear-gradient(
           90deg,
           transparent,
-          rgba(255, 255, 255, 0.1),
+          rgba(168, 129, 61, 0.15),
           transparent
         );
         transition: left 0.5s;
       }
 
-      .project-card:hover::before {
+      .project-panel:hover::before {
         left: 100%;
       }
 
-      .project-card:hover {
-        transform: translateY(-8px) scale(1.02);
-        background: rgba(255, 255, 255, 0.1);
-        border-color: rgba(102, 126, 234, 0.5);
-        box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+      .project-panel:hover {
+        border-left-color: #a8813d;
+        box-shadow: 0 10px 30px rgba(168, 129, 61, 0.4);
+        transform: skew(-1deg) translateY(-5px);
       }
 
-      .project-icon {
-        width: 80px;
-        height: 80px;
-        border-radius: 16px;
+      .large-panel {
+        grid-area: large;
+        padding: 3rem;
+        min-height: 400px;
+      }
+
+      .medium-panel {
+        grid-area: medium;
+        padding: 2rem;
+        min-height: 180px;
+      }
+
+      .small-panel {
+        grid-area: small;
+        padding: 2rem;
+        min-height: 180px;
+      }
+
+      .panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+      }
+
+      .panel-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #d4b57e, #a8813d);
+        border: 2px solid #6b5d4f;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 2rem;
-        flex-shrink: 0;
-        transition: all 0.3s ease;
-      }
-
-      .bookstore-card .project-icon {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        color: white;
-      }
-
-      .progressbar-card .project-icon {
-        background: linear-gradient(135deg, #f093fb, #f5576c);
-        color: white;
-      }
-
-      .coming-soon-card .project-icon {
-        background: linear-gradient(135deg, #4facfe, #00f2fe);
-        color: white;
-      }
-
-      .project-card:hover .project-icon {
-        transform: rotate(10deg) scale(1.1);
-      }
-
-      .project-content {
-        flex: 1;
-      }
-
-      .project-title {
         font-size: 1.5rem;
-        font-weight: 700;
+        color: #2c2822;
+        transform: skew(-10deg);
+        box-shadow: 0 0 15px rgba(168, 129, 61, 0.5);
+      }
+
+      .panel-number {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 3rem;
+        color: #d4b57e;
+        opacity: 0.4;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+      }
+
+      .panel-content {
+        margin-bottom: 2rem;
+      }
+
+      .panel-title {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 2.5rem;
+        color: #d4b57e;
         margin-bottom: 0.5rem;
-        color: #ffffff;
+        letter-spacing: 2px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
       }
 
-      .project-description {
-        color: #a0a0a0;
-        line-height: 1.6;
+      .large-panel .panel-title {
+        font-size: 3.5rem;
+      }
+
+      .panel-subtitle {
+        font-size: 1rem;
+        color: #a8813d;
+        font-weight: 700;
         margin-bottom: 1rem;
+        letter-spacing: 1px;
       }
 
-      .project-tags {
+      .panel-description {
+        color: #c0b49a;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        font-weight: 400;
+      }
+
+      .tech-tags {
         display: flex;
         gap: 0.5rem;
         flex-wrap: wrap;
       }
 
-      .tag {
-        background: rgba(102, 126, 234, 0.2);
-        color: #667eea;
-        padding: 0.25rem 0.75rem;
-        border-radius: 20px;
+      .tech-tag {
+        background: rgba(168, 129, 61, 0.4);
+        border: 1px solid #a8813d;
+        color: #d4b57e;
+        padding: 0.3rem 0.8rem;
         font-size: 0.8rem;
-        font-weight: 500;
+        font-weight: 700;
+        letter-spacing: 1px;
+        transform: skew(-5deg);
       }
 
-      .project-arrow {
-        font-size: 1.5rem;
-        color: #667eea;
+      .panel-footer {
+        margin-top: auto;
+      }
+
+      .access-btn {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: linear-gradient(135deg, #d4b57e, #a8813d);
+        color: #2c2822;
+        padding: 1rem 2rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        transform: skew(-5deg);
         transition: all 0.3s ease;
+        border: 2px solid transparent;
       }
 
-      .project-card:hover .project-arrow {
-        transform: translateX(8px);
+      .project-panel:hover .access-btn {
+        background: linear-gradient(135deg, #a8813d, #8b6f34);
+        box-shadow: 0 0 20px rgba(168, 129, 61, 0.6);
       }
 
-      .coming-soon-card {
-        opacity: 0.7;
-        cursor: default;
+      .disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
       }
 
-      .coming-soon-card:hover {
-        transform: none;
-        background: rgba(255, 255, 255, 0.05);
-        border-color: rgba(255, 255, 255, 0.1);
+      .disabled:hover {
+        transform: skew(-1deg);
         box-shadow: none;
       }
 
       /* Footer */
       .footer {
         margin-top: 4rem;
+        background: linear-gradient(135deg, #3c3530 0%, #4a453d 100%);
+        border-top: 3px solid #d4b57e;
         padding: 2rem 0;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        position: relative;
       }
 
-      .footer-content {
-        max-width: 1200px;
+      .footer::before {
+        content: "";
+        position: absolute;
+        top: -3px;
+        right: 0;
+        width: 40%;
+        height: 3px;
+        background: #a8813d;
+      }
+
+      .footer-frame {
+        max-width: 1400px;
         margin: 0 auto;
         padding: 0 2rem;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        flex-wrap: wrap;
-        gap: 1rem;
       }
 
-      .footer-left {
-        color: #a0a0a0;
+      .copyright {
         font-size: 0.9rem;
+        color: #c0b49a;
       }
 
-      .footer-left i {
-        color: #e74c3c;
-        margin: 0 0.25rem;
+      .copyright strong {
+        color: #d4b57e;
+        font-weight: 700;
       }
 
-      .footer-left strong {
-        color: #ffffff;
-      }
-
-      .social-links {
+      .social-panel {
         display: flex;
         gap: 1rem;
       }
 
-      .social-link {
-        width: 40px;
-        height: 40px;
-        border-radius: 10px;
-        background: rgba(255, 255, 255, 0.05);
+      .social-btn {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #4a453d, #3c3530);
+        border: 2px solid #6b5d4f;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #a0a0a0;
+        color: #c0b49a;
         text-decoration: none;
         transition: all 0.3s ease;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        transform: skew(-10deg);
       }
 
-      .social-link:hover {
-        background: rgba(102, 126, 234, 0.2);
-        color: #667eea;
-        transform: translateY(-2px);
+      .social-btn:hover {
+        background: linear-gradient(135deg, #d4b57e, #a8813d);
+        color: #2c2822;
+        border-color: #a8813d;
+        box-shadow: 0 0 15px rgba(168, 129, 61, 0.6);
       }
 
       /* Responsive Design */
-      @media (max-width: 768px) {
-        .hero-title {
-          font-size: 2.5rem;
-          flex-direction: column;
-          gap: 0.5rem;
-        }
-
-        .projects-grid {
+      @media (max-width: 1024px) {
+        .projects-container {
           grid-template-columns: 1fr;
-          gap: 1.5rem;
+          grid-template-areas:
+            "large"
+            "medium"
+            "small";
         }
 
-        .project-card {
+        .main-title {
+          font-size: 4rem;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .header-frame {
           flex-direction: column;
+          gap: 1rem;
+        }
+
+        .main-title {
+          font-size: 3rem;
+        }
+
+        .large-panel,
+        .medium-panel,
+        .small-panel {
+          padding: 2rem;
+          min-height: auto;
+        }
+
+        .panel-title {
+          font-size: 2rem;
+        }
+
+        .large-panel .panel-title {
+          font-size: 2.5rem;
+        }
+
+        .footer-frame {
+          flex-direction: column;
+          gap: 1rem;
           text-align: center;
         }
 
-        .project-arrow {
-          display: none;
-        }
-
-        .footer-content {
-          flex-direction: column;
-          text-align: center;
-        }
-
-        .container {
+        .content-wrapper {
           padding: 0 1rem;
         }
       }
 
       @media (max-width: 480px) {
-        .hero-title {
-          font-size: 2rem;
+        .main-title {
+          font-size: 2.5rem;
         }
 
-        .project-card {
-          padding: 1.5rem;
-        }
-
-        .project-icon {
-          width: 60px;
-          height: 60px;
+        .company-name {
           font-size: 1.5rem;
+        }
+
+        .panel-icon {
+          width: 50px;
+          height: 50px;
+          font-size: 1.2rem;
+        }
+
+        .panel-number {
+          font-size: 2rem;
         }
       }
     </style>
