@@ -7,10 +7,10 @@ const SUPABASE_ANON_KEY =
 const APP_CONFIG = {
   name: "BookStore Cart",
   version: "1.0.0",
-  developer: "JamesC",
+  developer: "",
   description: "Modern store front with glassmorphism design",
   features: {
-    taxRate: 0.1, // 10% tax
+    taxRate: 0.1,
     currency: "IDR",
     currencySymbol: "Rp",
     enableNotifications: true,
@@ -19,7 +19,6 @@ const APP_CONFIG = {
   },
 };
 
-// Initialize Supabase client with error handling
 let supabase;
 try {
   supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
@@ -42,7 +41,6 @@ window.appConfig = APP_CONFIG;
 
 // Set dynamic content
 document.addEventListener("DOMContentLoaded", () => {
-  // Update developer name if element exists
   const developerNameElement = document.getElementById("developer-name");
   if (developerNameElement) {
     developerNameElement.textContent = APP_CONFIG.developer;

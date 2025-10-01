@@ -113,7 +113,6 @@ const placeholderProducts = [
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("DOM Content Loaded");
 
-  // Initialize DOM elements cache for performance
   initDOMElements();
 
   console.log("Product grid element:", productGrid);
@@ -123,36 +122,49 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // Initialize database tables
 async function initializeDatabase() {
-  // Check if we have Supabase configuration
+  // Quick check: if Supabase isn't configured, bail out early (caller will
+  // fallback to offline data). Do not throw here to avoid forcing demo mode.
   if (
-    !supabaseClient ||
+    !window.supabaseClient ||
     !window.isSupabaseAvailable ||
     !window.isSupabaseAvailable()
   ) {
-    throw new Error("Supabase not configured");
+    console.warn(
+      "initializeDatabase: Supabase not configured or not available"
+    );
+    return;
   }
 
   try {
-    // Check if products table exists and has data
-    const { data: existingProducts, error: checkError } = await supabaseClient
-      .from("products")
-      .select("*")
-      .limit(1);
+    // Check if products table exists and has data. If the table is missing
+    // or inaccessible, we log and return so the UI can show placeholder data
+    // without enabling a full demo mode.
+    const { data: existingProducts, error: checkError } =
+      await window.supabaseClient.from("products").select("*").limit(1);
 
-    if (checkError && checkError.code === "42P01") {
-      // Table doesn't exist, we'll assume it needs to be created
-      throw new Error(
-        "Database tables not found. Please ensure your Supabase database is properly configured."
+    if (checkError) {
+      console.warn(
+        "initializeDatabase: products table check error:",
+        checkError.message || checkError
       );
+      return;
     }
 
-    // If table exists but is empty, populate with placeholder data
+    // If table exists but is empty, try to populate with placeholder data.
     if (existingProducts && existingProducts.length === 0) {
-      await populateProducts();
+      try {
+        await populateProducts();
+      } catch (err) {
+        console.warn(
+          "initializeDatabase: populateProducts failed, continuing with placeholder data:",
+          err && err.message ? err.message : err
+        );
+      }
     }
   } catch (error) {
     console.error("Database initialization error:", error);
-    throw error;
+    // Return without throwing; loadProducts will handle fallback to placeholder data.
+    return;
   }
 }
 
@@ -176,20 +188,39 @@ async function populateProducts() {
 // Load products from database
 async function loadProducts() {
   try {
-    const { data, error } = await supabaseClient
+    if (!window.supabaseClient) {
+      console.warn(
+        "loadProducts: supabaseClient not available, using placeholder products"
+      );
+      products = placeholderProducts;
+      renderProducts();
+      return;
+    }
+
+    const { data, error } = await window.supabaseClient
       .from("products")
       .select("*")
       .order("id");
 
     if (error) {
-      throw error;
+      console.warn(
+        "loadProducts: query error, using placeholder products:",
+        error.message || error
+      );
+      products = placeholderProducts;
+      renderProducts();
+      return;
     }
 
     products = data || placeholderProducts;
     renderProducts();
   } catch (error) {
     console.error("Error loading products:", error);
-    showError("Failed to load products from database. Using offline data.");
+    // Use placeholder data as a safe fallback; do not change demo mode flag here.
+    console.warn(
+      "loadProducts exception, using placeholder data:",
+      error && error.message ? error.message : error
+    );
     products = placeholderProducts;
     renderProducts();
   }
@@ -218,7 +249,6 @@ function renderProducts() {
     productGrid.appendChild(productCard);
   });
 
-  // Also bind direct click handlers post-render to ensure reliability
   bindProductCardEvents();
 }
 
@@ -253,7 +283,6 @@ function createProductCard(product) {
 function setupEventListeners() {
   console.log("Setting up event listeners...");
 
-  // Re-query dynamic elements after render
   const productGridEl = document.getElementById("product-grid");
   const cartItemsEl = document.getElementById("cart-items");
   const closeErrorEl = document.getElementById("close-error");
@@ -799,24 +828,37 @@ function enableDemoMode() {
 // Check Supabase connection
 async function checkSupabaseConnection() {
   try {
-    if (!supabaseClient) {
-      throw new Error("Supabase client not available");
+    if (!window.supabaseClient) {
+      console.warn("Supabase client not found on window");
+      return false;
     }
 
-    // Simple connection test
-    const { data, error } = await supabaseClient
+    // Use a minimal, compatible query to verify connectivity. Selecting a real
+    // column is more reliable across Supabase/PostgREST versions than asking
+    // for a special 'count' column.
+    const { data, error } = await window.supabaseClient
       .from("products")
-      .select("count")
+      .select("id")
       .limit(1);
 
-    if (error && error.code !== "PGRST116") {
-      // PGRST116 is "relation does not exist"
-      throw error;
+    if (error) {
+      // If the table truly doesn't exist, admin might still work if it reads
+      // other tables; treat any error as an indication the public 'products'
+      // table couldn't be read for this client/config.
+      console.warn(
+        "Supabase connectivity check returned an error:",
+        error.message || error
+      );
+      return false;
     }
 
+    // If we got data (even an empty array) the service responded correctly.
     return true;
-  } catch (error) {
-    console.warn("Supabase connection failed:", error.message);
+  } catch (err) {
+    console.warn(
+      "Supabase connectivity check threw:",
+      err && err.message ? err.message : err
+    );
     return false;
   }
 }
@@ -826,18 +868,23 @@ async function initializeApp() {
   console.log("Initializing app...");
 
   try {
-    // Check Supabase connection first
+    // Try a light connectivity check first but don't bail immediately if it fails.
+    // We'll attempt database initialization and product loading; only if those
+    // steps fail will we enable demo mode.
     const isConnected = await checkSupabaseConnection();
-
-    if (!isConnected) {
-      throw new Error("Database connection failed");
-    }
 
     await initializeDatabase();
     await loadProducts();
 
-    // If we got here, connection is working
-    isDemoMode = false;
+    // If we reached here and products contain real entries, keep normal mode.
+    if (products && products.length > 0 && isConnected) {
+      isDemoMode = false;
+    } else {
+      // If connectivity check failed or products are placeholders, enable demo
+      // mode to make intent explicit.
+      isDemoMode = !(products && products.length > 0 && isConnected);
+    }
+
     initializeDemoMode();
 
     renderProducts();
@@ -845,6 +892,7 @@ async function initializeApp() {
     updateCartCount();
   } catch (error) {
     console.error("Failed to initialize app:", error);
+    // On any unexpected error, fall back to demo mode with placeholder data.
     enableDemoMode();
     renderProducts();
     updateCartDisplay();
